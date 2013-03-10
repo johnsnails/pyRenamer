@@ -367,24 +367,44 @@ def rename_using_patterns(name, path, pattern_ini, pattern_end, count):
     print "This routine is running!"
 
     # Some pattern matches for creation and modification date
-    createdate, modifydate = get_filestat_data(path)
-    newname = newname.replace('{createdate}', time.strftime("%d%b%Y", createdate))
-    newname = newname.replace('{createyear}', time.strftime("%Y", createdate))
-    newname = newname.replace('{createmonth}', time.strftime("%m", createdate))
-    newname = newname.replace('{createmonthname}', time.strftime("%B", createdate))
-    newname = newname.replace('{createmonthsimp}', time.strftime("%b", createdate))
-    newname = newname.replace('{createday}', time.strftime("%d", createdate))
-    newname = newname.replace('{createdayname}', time.strftime("%A", createdate))
-    newname = newname.replace('{createdaysimp}', time.strftime("%a", createdate))
+    createdate, modifydate = get_filestat_data(get_new_path(name, path))
+    if createdate is not None:
+        newname = newname.replace('{createdate}', time.strftime("%d%b%Y", createdate))
+        newname = newname.replace('{createyear}', time.strftime("%Y", createdate))
+        newname = newname.replace('{createmonth}', time.strftime("%m", createdate))
+        newname = newname.replace('{createmonthname}', time.strftime("%B", createdate))
+        newname = newname.replace('{createmonthsimp}', time.strftime("%b", createdate))
+        newname = newname.replace('{createday}', time.strftime("%d", createdate))
+        newname = newname.replace('{createdayname}', time.strftime("%A", createdate))
+        newname = newname.replace('{createdaysimp}', time.strftime("%a", createdate))
+    else:
+        newname = newname.replace('{createdate}', '')
+        newname = newname.replace('{createyear}', '')
+        newname = newname.replace('{createmonth}', '')
+        newname = newname.replace('{createmonthname}', '')
+        newname = newname.replace('{createmonthsimp}', '')
+        newname = newname.replace('{createday}', '')
+        newname = newname.replace('{createdayname}', '')
+        newname = newname.replace('{createdaysimp}', '')
 
-    newname = newname.replace('{modifydate}', time.strftime("%d%b%Y", modifydate))
-    newname = newname.replace('{modifyyear}', time.strftime("%Y", modifydate))
-    newname = newname.replace('{modifymonth}', time.strftime("%m", modifydate))
-    newname = newname.replace('{modifymonthname}', time.strftime("%B", modifydate))
-    newname = newname.replace('{modifymonthsimp}', time.strftime("%b", modifydate))
-    newname = newname.replace('{modifyday}', time.strftime("%d", modifydate))
-    newname = newname.replace('{modifydayname}', time.strftime("%A", modifydate))
-    newname = newname.replace('{modifydaysimp}', time.strftime("%a", modifydate))
+    if modifydate is not None:
+        newname = newname.replace('{modifydate}', time.strftime("%d%b%Y", modifydate))
+        newname = newname.replace('{modifyyear}', time.strftime("%Y", modifydate))
+        newname = newname.replace('{modifymonth}', time.strftime("%m", modifydate))
+        newname = newname.replace('{modifymonthname}', time.strftime("%B", modifydate))
+        newname = newname.replace('{modifymonthsimp}', time.strftime("%b", modifydate))
+        newname = newname.replace('{modifyday}', time.strftime("%d", modifydate))
+        newname = newname.replace('{modifydayname}', time.strftime("%A", modifydate))
+        newname = newname.replace('{modifydaysimp}', time.strftime("%a", modifydate))
+    else:
+        newname = newname.replace('{modifydate}', '')
+        newname = newname.replace('{modifyyear}', '')
+        newname = newname.replace('{modifymonth}', '')
+        newname = newname.replace('{modifymonthname}', '')
+        newname = newname.replace('{modifymonthsimp}', '')
+        newname = newname.replace('{modifyday}', '')
+        newname = newname.replace('{modifydayname}', '')
+        newname = newname.replace('{modifydaysimp}', '')
 
     # Replace {rand} with random number between 0 and 100.
     # If {rand500} the number will be between 0 and 500
@@ -503,7 +523,7 @@ def get_filestat_data(path):
         return createdate, modifydate
 
     createdate = datetime.fromtimestamp(st.st_ctime).timetuple()
-    modifydate = datetime.fromtimestamp(st.st_atime).timetuple()
+    modifydate = datetime.fromtimestamp(st.st_mtime).timetuple()
 
     return createdate, modifydate 
 
