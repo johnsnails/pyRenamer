@@ -579,6 +579,8 @@ Some today date replacements:
 {dayname}		friday
 {daysimp}		fri
 
+* You can prefix these with 'create' or 'modify' to lookup the file attributes.
+
 Random number replacements:
 {rand} is random number between 0 and 100.
 {rand,3} is random number between 0 and 100 of 3 digits (012)

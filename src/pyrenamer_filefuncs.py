@@ -26,6 +26,7 @@ import glob
 import re
 import sys
 import time
+from datetime import datetime
 import random
 
 import pyrenamer_globals
@@ -363,6 +364,28 @@ def rename_using_patterns(name, path, pattern_ini, pattern_end, count):
     newname = newname.replace('{dayname}', time.strftime("%A", time.localtime()))
     newname = newname.replace('{daysimp}', time.strftime("%a", time.localtime()))
 
+    print "This routine is running!"
+
+    # Some pattern matches for creation and modification date
+    createdate, modifydate = get_filestat_data(path)
+    newname = newname.replace('{createdate}', time.strftime("%d%b%Y", createdate))
+    newname = newname.replace('{createyear}', time.strftime("%Y", createdate))
+    newname = newname.replace('{createmonth}', time.strftime("%m", createdate))
+    newname = newname.replace('{createmonthname}', time.strftime("%B", createdate))
+    newname = newname.replace('{createmonthsimp}', time.strftime("%b", createdate))
+    newname = newname.replace('{createday}', time.strftime("%d", createdate))
+    newname = newname.replace('{createdayname}', time.strftime("%A", createdate))
+    newname = newname.replace('{createdaysimp}', time.strftime("%a", createdate))
+
+    newname = newname.replace('{modifydate}', time.strftime("%d%b%Y", modifydate))
+    newname = newname.replace('{modifyyear}', time.strftime("%Y", modifydate))
+    newname = newname.replace('{modifymonth}', time.strftime("%m", modifydate))
+    newname = newname.replace('{modifymonthname}', time.strftime("%B", modifydate))
+    newname = newname.replace('{modifymonthsimp}', time.strftime("%b", modifydate))
+    newname = newname.replace('{modifyday}', time.strftime("%d", modifydate))
+    newname = newname.replace('{modifydayname}', time.strftime("%A", modifydate))
+    newname = newname.replace('{modifydaysimp}', time.strftime("%a", modifydate))
+
     # Replace {rand} with random number between 0 and 100.
     # If {rand500} the number will be between 0 and 500
     # If {rand10-20} the number will be between 10 and 20
@@ -465,6 +488,25 @@ def replace_images(name, path, newname, newpath):
     return unicode(newname), unicode(newpath)
 
 
+def get_filestat_data(path):
+    """ Get file status attributes from a file. """
+    createdate = None
+    modifydate = None
+
+    try:
+        st = os.stat(path)
+        if not st:
+            print "ERROR: File attributes could not be read", path
+            return createdate, modifydate
+    except:
+        print "ERROR: processing file attributes on", path
+        return createdate, modifydate
+
+    createdate = datetime.fromtimestamp(st.st_ctime).timetuple()
+    modifydate = datetime.fromtimestamp(st.st_atime).timetuple()
+
+    return createdate, modifydate 
+
 def get_exif_data(path):
     """ Get EXIF data from file. """
     date = None
@@ -509,6 +551,7 @@ def get_exif_data(path):
         cameramodel = str(tags['Image Model'])
 
     return date, width, height, cameramaker, cameramodel
+
 
 
 def replace_music_hachoir(name, path, newname, newpath):
