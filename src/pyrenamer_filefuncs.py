@@ -199,11 +199,6 @@ def replace_with(name, path, orig, new):
     return unicode(newname), unicode(newpath)
 
 
-
-def strip_accents(s):
-        return ''.join((c for c in unicodedata.normalize('NFD', s) if unicodedata.category(c) != 'Mn'))
-
-
 def replace_accents(name, path):
     """ Remove accents, umlauts and other locale symbols from words 
 
