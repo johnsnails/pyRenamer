@@ -28,6 +28,7 @@ import sys
 import time
 from datetime import datetime
 import random
+import unicodedata
 
 import pyrenamer_globals
 
@@ -198,71 +199,25 @@ def replace_with(name, path, orig, new):
     return unicode(newname), unicode(newpath)
 
 
+
+def strip_accents(s):
+        return ''.join((c for c in unicodedata.normalize('NFD', s) if unicodedata.category(c) != 'Mn'))
+
+
 def replace_accents(name, path):
-    """ Remove accents, umlauts and other locale symbols from words """
+    """ Remove accents, umlauts and other locale symbols from words 
+
+    For instance: 'áàäâăÁÀÄÂĂéèëêěÉÈËÊĚíìïîĭÍÌÏÎĬóòöôŏÓÒÖÔŎúùüûůÚÙÜÛŮšŠčČřŘžŽýÝ'
+    becomes:      'aaaaaAAAAAeeeeeEEEEEiiiiiIIIIIoooooOOOOOuuuuuUUUUUsScCrRzZyY'
+    
+    Standard ASCII characters don't change, such as:
+    'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-`!@#$%^&*(){}[]:;.<>,'
+    """
     name = unicode(name)
     path = unicode(path)
 
-    newname = name.replace('á', 'a')
-    newname = newname.replace('à', 'a')
-    newname = newname.replace('ä', 'a')
-    newname = newname.replace('â', 'a')
-    newname = newname.replace('Á', 'A')
-    newname = newname.replace('À', 'A')
-    newname = newname.replace('Ä', 'A')
-    newname = newname.replace('Â', 'A')
 
-    newname = newname.replace('é', 'e')
-    newname = newname.replace('è', 'e')
-    newname = newname.replace('ë', 'e')
-    newname = newname.replace('ê', 'e')
-    newname = newname.replace('É', 'E')
-    newname = newname.replace('È', 'E')
-    newname = newname.replace('Ë', 'E')
-    newname = newname.replace('Ê', 'E')
-
-    newname = newname.replace('í', 'i')
-    newname = newname.replace('ì', 'i')
-    newname = newname.replace('ï', 'i')
-    newname = newname.replace('î', 'i')
-    newname = newname.replace('Í', 'I')
-    newname = newname.replace('Ì', 'I')
-    newname = newname.replace('Ï', 'I')
-    newname = newname.replace('Î', 'I')
-
-    newname = newname.replace('ó', 'o')
-    newname = newname.replace('ò', 'o')
-    newname = newname.replace('ö', 'o')
-    newname = newname.replace('ô', 'o')
-    newname = newname.replace('Ó', 'O')
-    newname = newname.replace('Ò', 'O')
-    newname = newname.replace('Ö', 'O')
-    newname = newname.replace('Ô', 'O')
-
-    newname = newname.replace('ú', 'u')
-    newname = newname.replace('ù', 'u')
-    newname = newname.replace('ü', 'u')
-    newname = newname.replace('û', 'u')
-    newname = newname.replace('Ú', 'U')
-    newname = newname.replace('Ù', 'U')
-    newname = newname.replace('Ü', 'U')
-    newname = newname.replace('Û', 'U')
-
-    """ Czech language accents replacement """
-    newname = newname.replace('ě', 'e')
-    newname = newname.replace('š', 's')
-    newname = newname.replace('č', 'c')
-    newname = newname.replace('ř', 'r')
-    newname = newname.replace('ž', 'z')
-    newname = newname.replace('ý', 'y')
-    newname = newname.replace('ů', 'u')
-    newname = newname.replace('Ě', 'E')
-    newname = newname.replace('Š', 'S')
-    newname = newname.replace('Č', 'C')
-    newname = newname.replace('Ř', 'R')
-    newname = newname.replace('Ž', 'Z')
-    newname = newname.replace('Ý', 'Y')
-    newname = newname.replace('Ů', 'U')
+    newname = ''.join((c for c in unicodedata.normalize('NFD', name) if unicodedata.category(c) != 'Mn'))
 
     newpath = get_new_path(newname, path)
     return unicode(newname), unicode(newpath)
